@@ -10,10 +10,16 @@ import (
 )
 
 var (
-	DBConn *gorm.DB
+	RDBConn *gorm.DB
 )
 
-func InitDB() {
+type rdb struct{}
+
+func NewRDB() RDB {
+	return &rdb{}
+}
+
+func (*rdb) InitRDB() {
 	var err error
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
@@ -24,7 +30,7 @@ func InitDB() {
 		os.Getenv("DB_PORT"),
 	)
 
-	DBConn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	RDBConn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database")
 	}
@@ -34,8 +40,8 @@ func InitDB() {
 	// fmt.Println("Database Migrated")
 }
 
-func CloseDB() {
-	sqlDB, err := DBConn.DB()
+func (*rdb) CloseRDB() {
+	sqlDB, err := RDBConn.DB()
 	if err != nil {
 		log.Fatalln(err)
 	}
