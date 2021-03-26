@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/gofiber/fiber/v2"
 	infrastructure "github.com/kazuki0924/go-what-to-read-app/infrastructure/env"
 )
 
@@ -12,5 +12,12 @@ func main() {
 
 	port := os.Getenv("HTTP_PORT")
 
-	fmt.Println(port)
+	app := fiber.New()
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
+	app.Listen(":" + port)
+
 }
