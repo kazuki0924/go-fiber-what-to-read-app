@@ -1,39 +1,36 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	env "github.com/kazuki0924/go-what-to-read-app/infrastructure/env"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
-	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
 	"gorm.io/gorm"
+
+	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
+	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
 )
 
 var (
-	conn       rdb.RDB       = rdb.NewRDB()
+	dbFunc     rdb.RDB       = rdb.NewRDB()
 	httpRouter router.Router = router.NewFiberRouter()
+	db         *gorm.DB
 )
 
-type Book struct {
-	gorm.Model
-	Title       string `json:"title"`
-	Author      string `json:"author"`
-	PublishedAt string `json:"published_at"`
-}
-
 func CreateBook(c *fiber.Ctx) error {
-	db := rdb.RDBConn
-
-	book := new(Book)
+	book := new(model.Book)
 	err := c.BodyParser(book)
 	if err != nil {
 		c.Status(503).SendString(err.Error())
 		return err
 	}
 
-	db.Create(&book)
+	var repo = repository.NewBookRepository(db)
+	repo.Create(book)
 	c.JSON(book)
 	return nil
 }
@@ -47,8 +44,12 @@ func main() {
 	env.LoadEnv()
 
 	// initialize relational database
-	conn.InitRDB()
-	defer conn.CloseRDB()
+	_db, err := dbFunc.InitRDB()
+	if err != nil {
+		log.Fatal("Failed to connect to database")
+	}
+	db = _db
+	defer dbFunc.CloseRDB()
 
 	// setup http routes
 	SetupRoutes()

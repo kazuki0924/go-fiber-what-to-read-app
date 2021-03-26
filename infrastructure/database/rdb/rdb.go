@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -19,7 +20,7 @@ func NewRDB() RDB {
 	return &rdb{}
 }
 
-func (*rdb) InitRDB() {
+func (*rdb) InitRDB() (*gorm.DB, error) {
 	var err error
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
@@ -32,12 +33,14 @@ func (*rdb) InitRDB() {
 
 	RDBConn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database")
+		return nil, err
 	}
 	fmt.Println("Database connection successfully opened")
 
-	// database.DBConn.AutoMigrate(&book.Book{})
-	// fmt.Println("Database Migrated")
+	RDBConn.AutoMigrate(&model.Book{})
+	fmt.Println("Database Migrated")
+
+	return RDBConn, nil
 }
 
 func (*rdb) CloseRDB() {
