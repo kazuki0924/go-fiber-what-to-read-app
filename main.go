@@ -6,8 +6,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	env "github.com/kazuki0924/go-what-to-read-app/infrastructure/env"
+	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
 	"gorm.io/gorm"
+)
+
+var (
+	conn       rdb.RDB       = rdb.NewRDB()
+	httpRouter router.Router = router.NewFiberRouter()
 )
 
 type Book struct {
@@ -16,11 +22,6 @@ type Book struct {
 	Author      string `json:"author"`
 	PublishedAt string `json:"published_at"`
 }
-
-var (
-	conn       rdb.RDB       = rdb.NewRDB()
-	httpRouter router.Router = router.NewFiberRouter()
-)
 
 func CreateBook(c *fiber.Ctx) error {
 	db := rdb.RDBConn
@@ -37,7 +38,7 @@ func CreateBook(c *fiber.Ctx) error {
 	return nil
 }
 
-func setupRoutes() {
+func SetupRoutes() {
 	httpRouter.POST_V1("book", CreateBook)
 }
 
@@ -50,7 +51,10 @@ func main() {
 	defer conn.CloseRDB()
 
 	// setup http routes
-	setupRoutes()
+	SetupRoutes()
+
+	// setup middlewares
+	middleware.SetupFiberMiddleWares()
 
 	// listern on port: $HTTP_PORT
 	port := os.Getenv("HTTP_PORT")

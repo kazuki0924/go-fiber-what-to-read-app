@@ -1,26 +1,30 @@
-# Start from the latest golang base image
-FROM golang:latest
+# multistage docker build. This redices the size of the final docker image.
+# stage 1 to build the app
+FROM golang:alpine as builder
 
-# Set the Current Working Directory inside the container
-WORKDIR /app
+RUN mkdir /build
 
-# Copy Go Modules dependency requirements file
-COPY go.mod .
+ADD . /build/
 
-# Copy Go Modules expected hashes file
-COPY go.sum .
+WORKDIR /build
 
-# Download dependencies
-RUN go mod download
-
-# Copy all the app sources (recursively copies files and directories from the host into the image)
-COPY . .
-
-# Set http port
-ENV PORT 3000
-
-# Build the app
 RUN go build -o main .
 
-# Run the app
+# stage 2 deploys the app built in stage 1
+FROM alpine
+
+RUN adduser -S -D -H -h /app appuser
+
+USER appuser
+
+COPY . /app
+
+COPY --from=builder /build/main /app/
+
+WORKDIR /app
+
+ENV PORT 3000
+
+EXPOSE 3000
+
 CMD ["./main"]
