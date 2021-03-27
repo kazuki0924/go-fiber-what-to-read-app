@@ -20,8 +20,4 @@ assignees: kazuki0924
 
 - [ ] implement controller
 
-- [ ] refactor SetupMigrations() in main()
-
-- [ ] refactor init() in main()
-
 - [ ] refactor SetupRoutes() in main()

@@ -30,7 +30,10 @@ func SetupRoutes(r router.Router) {
 func main() {
 	// initialize relational database
 	// Boilerplate: add new models here
-	dbFunc.SetupMigrations(db, &model.Book{})
+	dbFunc.SetupMigrations(
+		&model.Book{},
+	)
+
 	defer dbFunc.CloseRDB()
 
 	// setup http routes

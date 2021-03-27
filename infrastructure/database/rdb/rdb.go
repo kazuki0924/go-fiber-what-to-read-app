@@ -50,8 +50,8 @@ func (*rdb) CloseRDB() {
 	sqlDB.Close()
 }
 
-func (*rdb) SetupMigrations(db *gorm.DB, dst ...interface{}) {
-	db.AutoMigrate(dst...)
+func (*rdb) SetupMigrations(dst ...interface{}) {
+	RDBConn.AutoMigrate(dst...)
 
 	fmt.Println("Database Migrated")
 }
