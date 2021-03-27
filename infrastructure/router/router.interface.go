@@ -7,5 +7,6 @@ type Router interface {
 	POST_V1(uri string, f func(c *fiber.Ctx) error)
 	PUT_V1(uri string, f func(c *fiber.Ctx) error)
 	DELETE_V1(uri string, f func(c *fiber.Ctx) error)
+	DISPATCH() *fiber.App
 	SERVE(port string)
 }

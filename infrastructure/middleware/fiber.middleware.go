@@ -8,7 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
 )
 
 func timer() fiber.Handler {
@@ -37,8 +36,8 @@ var loggerConfig = logger.Config{
 	Format: "${cyan}[${time}] ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
 }
 
-func SetupFiberMiddleWares() {
-	router.FiberDispatcher.Use(
+func SetupFiberMiddleWares(app *fiber.App) {
+	app.Use(
 		timer(),
 		logger.New(loggerConfig),
 		cors.New(),

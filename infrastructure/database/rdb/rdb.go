@@ -38,6 +38,7 @@ func (*rdb) InitRDB() (*gorm.DB, error) {
 	fmt.Println("Database connection successfully opened")
 
 	RDBConn.AutoMigrate(&model.Book{})
+
 	fmt.Println("Database Migrated")
 
 	return RDBConn, nil
