@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/kazuki0924/go-what-to-read-app/controller"
@@ -12,7 +11,6 @@ import (
 	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
 	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
 	"github.com/kazuki0924/go-what-to-read-app/service"
-	"gorm.io/gorm"
 )
 
 var (
@@ -24,26 +22,15 @@ var (
 	bookController               = controller.NewBookController(bookService)
 )
 
-func init() {
-	// initialize relational database
-	SetupMigrations(db)
-}
-
-// Boilerplate: add new models here
-func SetupMigrations(db *gorm.DB) {
-	db.AutoMigrate(
-		&model.Book{},
-	)
-
-	fmt.Println("Database Migrated")
-}
-
 // Boilerplate: add new routes here
 func SetupRoutes(r router.Router) {
 	r.POST_V1("book", bookController.CreateBook)
 }
 
 func main() {
+	// initialize relational database
+	// Boilerplate: add new models here
+	dbFunc.SetupMigrations(db, &model.Book{})
 	defer dbFunc.CloseRDB()
 
 	// setup http routes
