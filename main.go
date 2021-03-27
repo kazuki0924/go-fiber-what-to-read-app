@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
+	env "github.com/kazuki0924/go-what-to-read-app/config/env"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
-	env "github.com/kazuki0924/go-what-to-read-app/infrastructure/env"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 	"gorm.io/gorm"
 
