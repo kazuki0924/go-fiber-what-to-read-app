@@ -4,10 +4,10 @@ import (
 	"log"
 	"os"
 
-	env "github.com/kazuki0924/go-what-to-read-app/config/env"
 	"github.com/kazuki0924/go-what-to-read-app/controller"
 	domain "github.com/kazuki0924/go-what-to-read-app/domain/interface/repository"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
+	env "github.com/kazuki0924/go-what-to-read-app/infrastructure/config/env"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
