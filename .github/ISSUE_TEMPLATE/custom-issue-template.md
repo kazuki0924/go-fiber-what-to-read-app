@@ -1,10 +1,9 @@
 ---
 name: custom issue template
-about: custom issue template
-title: ''
+about: implement $1 for $2 feature
+title: 'implement $1 for $2 feature'
 labels: ''
 assignees: kazuki0924
-
 ---
 
 ### Todo

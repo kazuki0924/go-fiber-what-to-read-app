@@ -1,13 +1,12 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/kazuki0924/go-what-to-read-app/controller"
-	domain "github.com/kazuki0924/go-what-to-read-app/domain/interface/repository"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
-	env "github.com/kazuki0924/go-what-to-read-app/infrastructure/config/env"
+	_ "github.com/kazuki0924/go-what-to-read-app/infrastructure/config"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
@@ -18,33 +17,16 @@ import (
 
 var (
 	httpRouter     router.Router = router.NewFiberRouter()
+	db                           = dbFunc.InitRDB()
 	dbFunc         rdb.RDB       = rdb.NewRDB()
-	db             *gorm.DB
-	bookRepository domain.BookRepository
-	bookService    service.BookService
-	bookController controller.BookController
+	bookRepository               = repository.NewBookRepository(db)
+	bookService                  = service.NewBookService(bookRepository)
+	bookController               = controller.NewBookController(bookService)
 )
 
 func init() {
-	// load environment variables
-	env.LoadEnv()
-
 	// initialize relational database
-	var err error
-	db, err = dbFunc.InitRDB()
-	if err != nil {
-		log.Fatal("Failed to connect to database")
-	}
 	SetupMigrations(db)
-
-	bookRepository = repository.NewBookRepository(db)
-	bookService = service.NewBookService(bookRepository)
-	bookController = controller.NewBookController(bookService)
-}
-
-// Boilerplate: add new routes here
-func SetupRoutes(r router.Router) {
-	r.POST_V1("book", bookController.CreateBook)
 }
 
 // Boilerplate: add new models here
@@ -52,6 +34,13 @@ func SetupMigrations(db *gorm.DB) {
 	db.AutoMigrate(
 		&model.Book{},
 	)
+
+	fmt.Println("Database Migrated")
+}
+
+// Boilerplate: add new routes here
+func SetupRoutes(r router.Router) {
+	r.POST_V1("book", bookController.CreateBook)
 }
 
 func main() {
