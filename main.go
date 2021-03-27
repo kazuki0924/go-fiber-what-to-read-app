@@ -6,6 +6,7 @@ import (
 
 	env "github.com/kazuki0924/go-what-to-read-app/config/env"
 	"github.com/kazuki0924/go-what-to-read-app/controller"
+	domain "github.com/kazuki0924/go-what-to-read-app/domain/interface/repository"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
@@ -19,10 +20,27 @@ var (
 	httpRouter     router.Router = router.NewFiberRouter()
 	dbFunc         rdb.RDB       = rdb.NewRDB()
 	db             *gorm.DB
-	bookRepository = repository.NewBookRepository(db)
-	bookService    = service.NewBookService(bookRepository)
-	bookController = controller.NewBookController(bookService)
+	bookRepository domain.BookRepository
+	bookService    service.BookService
+	bookController controller.BookController
 )
+
+func init() {
+	// load environment variables
+	env.LoadEnv()
+
+	// initialize relational database
+	var err error
+	db, err = dbFunc.InitRDB()
+	if err != nil {
+		log.Fatal("Failed to connect to database")
+	}
+	SetupMigrations(db)
+
+	bookRepository = repository.NewBookRepository(db)
+	bookService = service.NewBookService(bookRepository)
+	bookController = controller.NewBookController(bookService)
+}
 
 // Boilerplate: add new routes here
 func SetupRoutes(r router.Router) {
@@ -37,15 +55,6 @@ func SetupMigrations(db *gorm.DB) {
 }
 
 func main() {
-	// load environment variables
-	env.LoadEnv()
-
-	// initialize relational database
-	var err error
-	db, err = dbFunc.InitRDB()
-	if err != nil {
-		log.Fatal("Failed to connect to database")
-	}
 	defer dbFunc.CloseRDB()
 
 	// setup http routes
@@ -57,5 +66,5 @@ func main() {
 
 	// listern on port $HTTP_PORT
 	port := os.Getenv("HTTP_PORT")
-	httpRouter.SERVE(port)
+	httpRouter.SERVE(port, app)
 }

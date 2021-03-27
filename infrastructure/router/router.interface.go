@@ -8,5 +8,5 @@ type Router interface {
 	PUT_V1(uri string, f func(c *fiber.Ctx) error)
 	DELETE_V1(uri string, f func(c *fiber.Ctx) error)
 	DISPATCH() *fiber.App
-	SERVE(port string)
+	SERVE(port string, app *fiber.App)
 }

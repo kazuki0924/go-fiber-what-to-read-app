@@ -10,14 +10,16 @@ type fiberRouter struct{}
 
 var (
 	FiberDispatcher *fiber.App
-	api             = FiberDispatcher.Group("/api")
-	v1              = api.Group("/v1")
+	api             fiber.Router
+	v1              fiber.Router
 )
 
 type handler = func(c *fiber.Ctx) error
 
 func NewFiberRouter() Router {
 	FiberDispatcher = fiber.New()
+	api = FiberDispatcher.Group("/api")
+	v1 = api.Group("/v1")
 	return &fiberRouter{}
 }
 
@@ -41,7 +43,7 @@ func (*fiberRouter) DISPATCH() *fiber.App {
 	return FiberDispatcher
 }
 
-func (*fiberRouter) SERVE(port string) {
+func (*fiberRouter) SERVE(port string, app *fiber.App) {
 	fmt.Printf("Fiber HTTP server running on port %v", port)
-	FiberDispatcher.Listen(":" + port)
+	app.Listen(":" + port)
 }
