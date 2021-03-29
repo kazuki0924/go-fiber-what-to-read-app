@@ -6,3 +6,5 @@
 - ややクリーンなアーキテクチャ（クリーンアーキテクチャでない）
 - fiber
 - gorm
+- PostgreSQL
+- GitHub Actions
