@@ -29,7 +29,7 @@ func (*bookRepository) Create(book *model.Book) error {
 
 func (*bookRepository) Get(id uint) (*model.Book, error) {
 	var book *model.Book
-	err := db.Find(&book, id).Error
+	err := db.First(&book, id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -37,4 +37,16 @@ func (*bookRepository) Get(id uint) (*model.Book, error) {
 		return nil, err
 	}
 	return book, nil
+}
+
+func (*bookRepository) List() ([]model.Book, error) {
+	var books []model.Book
+	err := db.Find(&books).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return books, nil
 }

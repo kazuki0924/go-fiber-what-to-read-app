@@ -2,23 +2,27 @@ package infrastructure
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 )
 
 type fiberRouter struct{}
 
 var (
 	FiberDispatcher *fiber.App
+	app             fiber.Router
 	api             fiber.Router
 	v1              fiber.Router
 )
 
 type handler = func(c *fiber.Ctx) error
 
-func NewFiberRouter() Router {
+func NewFiberRouterWithMiddlewares() Router {
 	FiberDispatcher = fiber.New()
-	api = FiberDispatcher.Group("/api")
+	app = middleware.SetupFiberMiddleWares(FiberDispatcher)
+	api = app.Group("/api")
 	v1 = api.Group("/v1")
 	return &fiberRouter{}
 }
@@ -39,12 +43,8 @@ func (*fiberRouter) DELETE_V1(uri string, f handler) {
 	v1.Delete(uri, f)
 }
 
-func (*fiberRouter) DISPATCH() *fiber.App {
-	return FiberDispatcher
-}
+func (*fiberRouter) SERVE(port string) {
+	fmt.Printf("Fiber HTTP server running on port %v\n", port)
 
-func (*fiberRouter) SERVE(port string, app *fiber.App) {
-	fmt.Printf("Fiber HTTP server running on port %v", port)
-
-	app.Listen(":" + port)
+	log.Fatal(FiberDispatcher.Listen(":" + port))
 }
