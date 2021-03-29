@@ -36,11 +36,20 @@ var loggerConfig = logger.Config{
 	Format: "${cyan}[${time}] ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
 }
 
-func SetupFiberMiddleWares(app *fiber.App) {
+func SetupFiberMiddleWares(app *fiber.App) *fiber.App {
 	app.Use(
 		timer(),
 		logger.New(loggerConfig),
-		cors.New(),
+		cors.New(cors.Config{
+			Next:             nil,
+			AllowOrigins:     "*",
+			AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH",
+			AllowHeaders:     "",
+			AllowCredentials: false,
+			ExposeHeaders:    "",
+			MaxAge:           0,
+		}),
 		cache.New(cacheConfig),
 	)
+	return app
 }
