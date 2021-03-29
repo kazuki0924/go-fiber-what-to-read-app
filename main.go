@@ -5,7 +5,7 @@ import (
 
 	"github.com/kazuki0924/go-what-to-read-app/controller"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
-	_ "github.com/kazuki0924/go-what-to-read-app/infrastructure/config"
+	_ "github.com/kazuki0924/go-what-to-read-app/infrastructure/config/env"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	middleware "github.com/kazuki0924/go-what-to-read-app/infrastructure/middleware"
 	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
@@ -24,6 +24,7 @@ var (
 
 // Boilerplate: add new routes here
 func SetupRoutes(r router.Router) {
+	r.GET_V1("book/:id", bookController.GetBook)
 	r.POST_V1("book", bookController.CreateBook)
 }
 

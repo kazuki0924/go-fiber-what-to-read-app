@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
@@ -12,7 +14,7 @@ var (
 )
 
 type BookController interface {
-	// GetBook(c *fiber.Ctx) error
+	GetBook(c *fiber.Ctx) error
 	// ListBook(c *fiber.Ctx) error
 	CreateBook(c *fiber.Ctx) error
 	// UpdateBook(c *fiber.Ctx) error
@@ -34,7 +36,30 @@ func (*bookController) CreateBook(c *fiber.Ctx) error {
 		return err
 	}
 
-	bookService.Create(book)
+	err = bookService.Create(book)
+	if err != nil {
+		c.Status(503).SendString(err.Error())
+		return err
+	}
+
 	c.JSON(book)
+	return nil
+}
+
+func (*bookController) GetBook(c *fiber.Ctx) error {
+	book := new(model.Book)
+
+	id, err := strconv.ParseUint(c.Params("id"), 0, 0)
+	if err != nil {
+		c.Status(503).SendString(err.Error())
+		return err
+	}
+
+	book, err = bookService.Get(uint(id))
+	if err != nil {
+		c.Status(503).SendString(err.Error())
+		return err
+	}
+	c.JSON(&book)
 	return nil
 }

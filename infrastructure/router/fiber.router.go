@@ -45,5 +45,6 @@ func (*fiberRouter) DISPATCH() *fiber.App {
 
 func (*fiberRouter) SERVE(port string, app *fiber.App) {
 	fmt.Printf("Fiber HTTP server running on port %v", port)
+
 	app.Listen(":" + port)
 }

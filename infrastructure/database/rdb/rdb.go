@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -32,11 +31,10 @@ func (*rdb) InitRDB() *gorm.DB {
 
 	RDBConn, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		if err != nil {
-			panic("Failed to connect to database")
-		}
-		return nil
+		fmt.Println("Error connecting to postgres")
+		panic(err)
 	}
+
 	fmt.Println("Database connection successfully opened")
 
 	return RDBConn
@@ -45,7 +43,8 @@ func (*rdb) InitRDB() *gorm.DB {
 func (*rdb) CloseRDB() {
 	sqlDB, err := RDBConn.DB()
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("Error closing postgres")
+		panic(err)
 	}
 	sqlDB.Close()
 }

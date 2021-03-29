@@ -1,24 +1,30 @@
 package config
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
 )
+
+func init() {
+	LoadEnv()
+}
 
 func LoadEnv() {
 	env := os.Getenv("GO_ENV")
 	if env == "prod" {
 		err := godotenv.Load(".env.prod")
 		if err != nil {
-			log.Fatal("Error loading .env.prod file")
+			fmt.Println("Error loading .env.prod file")
+			panic(err)
 		}
 		return
 	}
 
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		fmt.Println("Error loading .env file")
+		panic(err)
 	}
 }
