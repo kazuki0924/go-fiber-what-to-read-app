@@ -6,7 +6,7 @@ import (
 
 type BookRepository interface {
 	Get(id uint) (*model.Book, error)
-	// List() ([]model.Book, error)
+	List() ([]model.Book, error)
 	Create(book *model.Book) error
 	// Create(book *model.Book) error
 	// Update(book *model.Book) error

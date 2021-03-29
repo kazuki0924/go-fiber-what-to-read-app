@@ -8,7 +8,7 @@ import (
 type BookService interface {
 	// Validate(book *model.Book) error
 	Get(id uint) (*model.Book, error)
-	// List() ([]model.Book, error)
+	List() ([]model.Book, error)
 	Create(book *model.Book) error
 	// Update(book *model.Book) error
 	// Delete(book *model.Book) error
@@ -39,4 +39,12 @@ func (*bookService) Get(id uint) (*model.Book, error) {
 		return nil, err
 	}
 	return book, nil
+}
+
+func (*bookService) List() ([]model.Book, error) {
+	books, err := bookRepository.List()
+	if err != nil {
+		return nil, err
+	}
+	return books, nil
 }

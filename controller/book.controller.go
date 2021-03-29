@@ -15,7 +15,7 @@ var (
 
 type BookController interface {
 	GetBook(c *fiber.Ctx) error
-	// ListBook(c *fiber.Ctx) error
+	ListBook(c *fiber.Ctx) error
 	CreateBook(c *fiber.Ctx) error
 	// UpdateBook(c *fiber.Ctx) error
 	// DeleteBook(c *fiber.Ctx) error
@@ -61,5 +61,15 @@ func (*bookController) GetBook(c *fiber.Ctx) error {
 		return err
 	}
 	c.JSON(&book)
+	return nil
+}
+
+func (*bookController) ListBook(c *fiber.Ctx) error {
+	books, err := bookService.List()
+	if err != nil {
+		c.Status(503).SendString(err.Error())
+		return err
+	}
+	c.JSON(&books)
 	return nil
 }
