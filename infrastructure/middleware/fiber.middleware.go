@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -24,14 +23,6 @@ func timer() fiber.Handler {
 	}
 }
 
-var cacheConfig = cache.Config{
-	Next: func(c *fiber.Ctx) bool {
-		return c.Query("refresh") == "true"
-	},
-	Expiration:   15 * time.Minute,
-	CacheControl: true,
-}
-
 var loggerConfig = logger.Config{
 	Format: "${cyan}[${time}] ${white}${pid} ${red}${status} ${blue}[${method}] ${white}${path}\n",
 }
@@ -42,14 +33,13 @@ func SetupFiberMiddleWares(app *fiber.App) *fiber.App {
 		logger.New(loggerConfig),
 		cors.New(cors.Config{
 			Next:             nil,
-			AllowOrigins:     "*",
+			AllowOrigins:     "http://localhost:3000",
 			AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH",
 			AllowHeaders:     "",
-			AllowCredentials: false,
+			AllowCredentials: true,
 			ExposeHeaders:    "",
 			MaxAge:           0,
 		}),
-		cache.New(cacheConfig),
 	)
 	return app
 }
