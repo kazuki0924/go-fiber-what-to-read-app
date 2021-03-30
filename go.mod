@@ -11,6 +11,7 @@ require (
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	golang.org/x/sys v0.0.0-20210324051608-47abb6519492 // indirect
+	gopkg.in/guregu/null.v3 v3.5.0
 	gorm.io/driver/postgres v1.0.8
 	gorm.io/gorm v1.21.6 // indirect
 )

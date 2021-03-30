@@ -5,9 +5,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
+	"github.com/kazuki0924/go-what-to-read-app/domain/model"
+	"github.com/kazuki0924/go-what-to-read-app/infrastructure/database/dto"
 	"github.com/kazuki0924/go-what-to-read-app/service"
 )
+
+const layout = "2006-01-02"
 
 var (
 	bookService service.BookService
@@ -30,19 +33,21 @@ func NewBookController(service service.BookService) BookController {
 
 func (*bookController) CreateBook(c *fiber.Ctx) error {
 	book := new(model.Book)
-	err := c.BodyParser(book)
+	err := c.BodyParser(&book)
 	if err != nil {
 		c.Status(503).SendString(err.Error())
 		return err
 	}
 
-	err = bookService.Create(book)
+	converted := dto.BookModelToBookDBModel(book)
+
+	err = bookService.Create(converted)
 	if err != nil {
 		c.Status(503).SendString(err.Error())
 		return err
 	}
 
-	c.JSON(book)
+	c.JSON(&book)
 	return nil
 }
 

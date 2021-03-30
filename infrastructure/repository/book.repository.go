@@ -5,6 +5,7 @@ import (
 
 	repository "github.com/kazuki0924/go-what-to-read-app/domain/interface/repository"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
+	"github.com/kazuki0924/go-what-to-read-app/infrastructure/database/dto"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ func NewBookRepository(_db *gorm.DB) repository.BookRepository {
 	return &bookRepository{}
 }
 
-func (*bookRepository) Create(book *model.Book) error {
+func (*bookRepository) Create(book *dto.Book) error {
 	err := db.Create(book).Error
 	if err != nil {
 		return err

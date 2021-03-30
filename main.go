@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/kazuki0924/go-what-to-read-app/controller"
-	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
 	_ "github.com/kazuki0924/go-what-to-read-app/infrastructure/config/env"
+	"github.com/kazuki0924/go-what-to-read-app/infrastructure/database/dto"
 	rdb "github.com/kazuki0924/go-what-to-read-app/infrastructure/database/rdb"
 	repository "github.com/kazuki0924/go-what-to-read-app/infrastructure/repository"
 	router "github.com/kazuki0924/go-what-to-read-app/infrastructure/router"
@@ -32,7 +32,7 @@ func main() {
 	// initialize relational database
 	// Boilerplate: add new models here
 	dbFunc.SetupMigrations(
-		&model.Book{},
+		&dto.Book{},
 	)
 
 	defer dbFunc.CloseRDB()

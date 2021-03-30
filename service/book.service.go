@@ -3,13 +3,14 @@ package service
 import (
 	repository "github.com/kazuki0924/go-what-to-read-app/domain/interface/repository"
 	model "github.com/kazuki0924/go-what-to-read-app/domain/model"
+	"github.com/kazuki0924/go-what-to-read-app/infrastructure/database/dto"
 )
 
 type BookService interface {
 	// Validate(book *model.Book) error
 	Get(id uint) (*model.Book, error)
 	List() ([]model.Book, error)
-	Create(book *model.Book) error
+	Create(book *dto.Book) error
 	// Update(book *model.Book) error
 	// Delete(book *model.Book) error
 }
@@ -25,7 +26,7 @@ func NewBookService(repository repository.BookRepository) BookService {
 	return &bookService{}
 }
 
-func (*bookService) Create(book *model.Book) error {
+func (*bookService) Create(book *dto.Book) error {
 	err := bookRepository.Create(book)
 	if err != nil {
 		return err
