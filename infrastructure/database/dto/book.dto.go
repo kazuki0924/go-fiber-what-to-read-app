@@ -32,7 +32,7 @@ func BookModelToBookDBModel(b *model.Book) *Book {
 	return book
 }
 
-// func BookToBookModel(b *Book) *model.Book {
+// func BookDBModelToBookModel(b *Book) *model.Book {
 // 	return &model.Book{
 // 		Title: b.Title,
 // 	}
